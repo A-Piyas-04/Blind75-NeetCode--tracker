@@ -1,4 +1,4 @@
-# NeonCode Recall
+# Blind75 Tracker
 
 A personal desktop flashcard / randomizer app for practicing **NeetCode Blind 75** problems.  
 Built with Python · CustomTkinter · SQLite — runs fully offline, no login or internet required.

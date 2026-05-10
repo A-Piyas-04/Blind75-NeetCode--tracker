@@ -51,7 +51,7 @@ def _scrollable(parent, **kw) -> ctk.CTkScrollableFrame:
 # ── Base view ─────────────────────────────────────────────────────────────────
 
 class _BaseView(ctk.CTkFrame):
-    def __init__(self, parent, app: "NeonCodeRecallApp"):
+    def __init__(self, parent, app: "Blind75TrackerApp"):
         super().__init__(parent, fg_color=COLORS["bg_main"], corner_radius=0)
         self._app = app
         self.grid_columnconfigure(0, weight=1)
@@ -62,7 +62,7 @@ class _BaseView(ctk.CTkFrame):
 
 # ── Main Application ──────────────────────────────────────────────────────────
 
-class NeonCodeRecallApp(ctk.CTk):
+class Blind75TrackerApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         db.create_tables()
@@ -97,12 +97,12 @@ class NeonCodeRecallApp(ctk.CTk):
         logo = ctk.CTkFrame(sb, fg_color="transparent")
         logo.grid(row=0, column=0, padx=22, pady=(30, 4), sticky="w")
         ctk.CTkLabel(
-            logo, text="⬡  NeonCode",
+            logo, text="⬡  Blind75",
             font=("Segoe UI", 20, "bold"),
             text_color=COLORS["primary"],
         ).pack(anchor="w")
         ctk.CTkLabel(
-            logo, text="    Recall",
+            logo, text="    Tracker",
             font=("Segoe UI", 20, "bold"),
             text_color=COLORS["accent"],
         ).pack(anchor="w")
@@ -213,7 +213,7 @@ class NeonCodeRecallApp(ctk.CTk):
 # ── Dashboard ─────────────────────────────────────────────────────────────────
 
 class DashboardView(_BaseView):
-    def __init__(self, parent, app: NeonCodeRecallApp):
+    def __init__(self, parent, app: Blind75TrackerApp):
         super().__init__(parent, app)
         self.grid_rowconfigure(0, weight=1)
         self._build()
@@ -341,7 +341,7 @@ class DashboardView(_BaseView):
 # ── Add / Edit Problem ────────────────────────────────────────────────────────
 
 class AddProblemView(_BaseView):
-    def __init__(self, parent, app: NeonCodeRecallApp):
+    def __init__(self, parent, app: Blind75TrackerApp):
         super().__init__(parent, app)
         self.grid_rowconfigure(0, weight=1)
         self._edit_id: int | None = None
@@ -502,7 +502,7 @@ class AddProblemView(_BaseView):
 # ── Problem List ──────────────────────────────────────────────────────────────
 
 class ProblemListView(_BaseView):
-    def __init__(self, parent, app: NeonCodeRecallApp):
+    def __init__(self, parent, app: Blind75TrackerApp):
         super().__init__(parent, app)
         self.grid_rowconfigure(3, weight=1)   # scrollable list expands
         self._build()
@@ -663,7 +663,7 @@ class ProblemListView(_BaseView):
 # ── Random Practice ───────────────────────────────────────────────────────────
 
 class RandomPracticeView(_BaseView):
-    def __init__(self, parent, app: NeonCodeRecallApp):
+    def __init__(self, parent, app: Blind75TrackerApp):
         super().__init__(parent, app)
         self.grid_rowconfigure(3, weight=1)   # content area expands
         self._current: dict | None = None
@@ -960,5 +960,5 @@ class RandomPracticeView(_BaseView):
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    app = NeonCodeRecallApp()
+    app = Blind75TrackerApp()
     app.mainloop()

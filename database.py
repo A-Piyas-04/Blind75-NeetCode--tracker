@@ -1,4 +1,4 @@
-"""database.py — SQLite persistence layer for NeonCode Recall."""
+"""database.py — SQLite persistence layer for Blind75 Tracker."""
 from __future__ import annotations
 
 import os
