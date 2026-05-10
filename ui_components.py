@@ -205,6 +205,89 @@ def confirm_delete(name: str) -> bool:
     )
 
 
+# ── Toast popup ───────────────────────────────────────────────────────────────
+
+class Toast:
+    """
+    Small floating popup that appears for `duration` ms then fades away.
+    Attach it to any CTk root/toplevel via Toast(root, message, kind).
+    """
+
+    _DURATION = 3000   # visible ms before fade starts
+    _FADE_STEPS = 12
+    _FADE_MS = 18
+
+    def __init__(self, root, message: str, kind: str = "success"):
+        color = COLORS["success"] if kind == "success" else COLORS["danger"]
+
+        self._win = ctk.CTkToplevel(root)
+        self._win.overrideredirect(True)        # no title-bar / borders
+        self._win.attributes("-topmost", True)
+        self._win.attributes("-alpha", 0.0)
+        self._win.configure(fg_color=COLORS["bg_card"])
+
+        # Content
+        frame = ctk.CTkFrame(
+            self._win,
+            fg_color=COLORS["bg_card"],
+            corner_radius=10,
+            border_width=1,
+            border_color=color,
+        )
+        frame.pack(padx=0, pady=0)
+
+        ctk.CTkLabel(
+            frame,
+            text=message,
+            font=("Segoe UI", 13, "bold"),
+            text_color=color,
+            padx=20,
+            pady=14,
+        ).pack()
+
+        # Position: bottom-right of the parent window
+        root.update_idletasks()
+        rw = root.winfo_width()
+        rh = root.winfo_height()
+        rx = root.winfo_rootx()
+        ry = root.winfo_rooty()
+        self._win.update_idletasks()
+        tw = self._win.winfo_reqwidth()
+        th = self._win.winfo_reqheight()
+        x = rx + rw - tw - 24
+        y = ry + rh - th - 24
+        self._win.geometry(f"+{x}+{y}")
+
+        # Fade in
+        self._root = root
+        self._fade_in(0)
+
+    def _fade_in(self, step: int) -> None:
+        alpha = step / self._FADE_STEPS
+        self._win.attributes("-alpha", min(alpha, 1.0))
+        if step < self._FADE_STEPS:
+            self._root.after(self._FADE_MS, lambda: self._fade_in(step + 1))
+        else:
+            self._root.after(self._DURATION, self._start_fade_out)
+
+    def _start_fade_out(self) -> None:
+        self._fade_out(self._FADE_STEPS)
+
+    def _fade_out(self, step: int) -> None:
+        alpha = step / self._FADE_STEPS
+        try:
+            self._win.attributes("-alpha", max(alpha, 0.0))
+        except Exception:
+            return
+        if step > 0:
+            self._root.after(self._FADE_MS, lambda: self._fade_out(step - 1))
+        else:
+            try:
+                self._win.destroy()
+            except Exception:
+                pass
+
+
 # ── Status bar ────────────────────────────────────────────────────────────────
 
 class StatusBar:

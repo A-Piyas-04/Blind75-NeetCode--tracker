@@ -2,10 +2,19 @@
 from __future__ import annotations
 
 import os
+import sys
 import sqlite3
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "neetcode_flashcards.db")
+# When running as a PyInstaller .exe, __file__ points to a temporary extraction
+# folder that changes every launch. sys.executable always points to the .exe
+# itself, so placing the DB next to it gives stable, persistent storage.
+if getattr(sys, "frozen", False):
+    _base = os.path.dirname(sys.executable)
+else:
+    _base = os.path.dirname(os.path.abspath(__file__))
+
+DB_PATH = os.path.join(_base, "neetcode_flashcards.db")
 
 
 # ── Connection ────────────────────────────────────────────────────────────────

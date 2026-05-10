@@ -1,7 +1,7 @@
 # NeonCode Recall
 
 A personal desktop flashcard / randomizer app for practicing **NeetCode Blind 75** problems.  
-Built with Python · CustomTkinter · SQLite — runs fully offline, no login required.
+Built with Python · CustomTkinter · SQLite — runs fully offline, no login or internet required.
 
 ---
 
@@ -9,10 +9,17 @@ Built with Python · CustomTkinter · SQLite — runs fully offline, no login re
 
 | View | What it does |
 |---|---|
-| **Dashboard** | Stats (total, easy, medium, hard), recently practiced problems, quick Random Practice button |
-| **Add Problem** | Save a problem with name, difficulty, topic, optional link, and multiline notes |
-| **Problem List** | Browse all problems, search by name, filter by difficulty and topic, edit or delete |
-| **Random Practice** | Generate a random problem (with optional filters), mark as practiced, edit notes inline |
+| **Dashboard** | Live stats (total, easy, medium, hard counts), recently practiced problems, one-click Random Practice |
+| **Add Problem** | Save a problem with name, difficulty, topic, optional LeetCode link, and multiline notes |
+| **Problem List** | Browse all saved problems; search by name; filter by difficulty and topic; edit or delete any entry |
+| **Random Practice** | Generate a random problem (with optional difficulty / topic filters), mark as practiced, edit notes inline |
+
+### UX highlights
+- Smooth **fade transition** between views (~160 ms)
+- **Toast popup** confirmation for every Save, Update, and Delete action (visible 3 s, then fades out)
+- **Practice count** and **last-practiced date** tracked automatically
+- Friendly empty states and inline status messages throughout
+- Confirm dialog before any destructive delete
 
 ---
 
@@ -30,24 +37,31 @@ pip install -r requirements.txt
 python app.py
 ```
 
-The SQLite database (`neetcode_flashcards.db`) is created automatically in the same folder on first run.
+The SQLite database (`neetcode_flashcards.db`) is created automatically in the project folder on first run.
 
 ---
 
 ## Building a Windows `.exe`
 
+Always use `--collect-data customtkinter` so the UI assets are bundled correctly:
+
 ```bash
-pip install pyinstaller
-pyinstaller --onefile --windowed app.py
+pyinstaller --onefile --windowed --collect-data customtkinter app.py
 ```
 
-The executable will be placed in the `dist/` folder.
+The executable is placed in `dist/app.exe`.
 
-> **Tip:** If the `.exe` can't find `customtkinter` assets, use the following instead:
->
-> ```bash
-> pyinstaller --onefile --windowed --collect-data customtkinter app.py
-> ```
+### Data persistence for the `.exe`
+
+The app detects whether it is running as a frozen executable and stores the database **next to `app.exe`** (inside `dist/`), not in a temporary extraction folder. This means your data survives every relaunch.
+
+If you already have data from running `python app.py`, copy it across once:
+
+```
+neetcode_flashcards.db  →  dist\neetcode_flashcards.db
+```
+
+After that both run modes maintain their own independent databases.
 
 ---
 
@@ -55,12 +69,15 @@ The executable will be placed in the `dist/` folder.
 
 ```
 blind-75-tracker/
-├── app.py               # Main window, sidebar navigation, all four views
-├── database.py          # SQLite connection, schema, CRUD helpers
-├── ui_components.py     # Colour palette, fonts, widget factories, StatusBar
+├── app.py               # Main window, sidebar navigation, all four views, fade transitions
+├── database.py          # SQLite connection, schema, CRUD helpers, exe-aware DB path
+├── ui_components.py     # Colour palette, fonts, widget factories, StatusBar, Toast
 ├── requirements.txt
 ├── README.md
-└── neetcode_flashcards.db   # Created automatically on first run
+├── neetcode_flashcards.db        # Created automatically (python app.py)
+└── dist/
+    ├── app.exe
+    └── neetcode_flashcards.db    # Created automatically (app.exe)
 ```
 
 ---
@@ -86,21 +103,27 @@ CREATE TABLE problems (
 
 ## UI theme
 
+Dark ocean-cyan palette — refined for reduced eye strain and a professional look.
+
 | Role | Hex |
 |---|---|
 | Main background | `#06141B` |
-| Card background | `#0B2530` |
-| Primary cyan | `#00E5FF` |
-| Accent teal | `#14F1D9` |
-| Text | `#E6FBFF` |
-| Muted text | `#7FAAB5` |
-| Danger / delete | `#FF4FD8` |
-| Success / easy | `#00FFA3` |
-| Medium | `#FFB800` |
+| Card background | `#0B1E2D` |
+| Sidebar | `#050E16` |
+| Input background | `#0C2030` |
+| Primary cyan | `#38BDD4` |
+| Accent teal | `#26A294` |
+| Body text | `#BADDE8` |
+| Muted text | `#567E8E` |
+| Easy / success | `#20A878` |
+| Medium | `#C48A18` |
+| Hard / danger | `#C04EA0` |
+| Subtle border | `#1C3244` |
 
 ---
 
 ## Requirements
 
 - Python 3.10 or later
-- Windows 10 / 11 (CustomTkinter works on macOS and Linux too)
+- Windows 10 / 11  
+  *(CustomTkinter also runs on macOS and Linux, though the `.exe` packaging targets Windows)*

@@ -17,7 +17,7 @@ from ui_components import (
     FONT_TITLE, FONT_HEADER, FONT_BODY, FONT_SMALL, FONT_MONO,
     make_card, make_label, make_button, make_danger_button,
     make_entry, make_textbox, make_combo,
-    difficulty_badge_color, confirm_delete, StatusBar,
+    difficulty_badge_color, confirm_delete, StatusBar, Toast,
 )
 
 ctk.set_appearance_mode("dark")
@@ -489,11 +489,13 @@ class AddProblemView(_BaseView):
         if self._edit_id is not None:
             db.update_problem(self._edit_id, name, diff, topic, link, notes)
             self._status.show("Problem updated successfully!")
+            Toast(self._app, f'"{name}" updated successfully!')
         else:
             db.add_problem(name, diff, topic, link, notes)
             self._status.show(
                 "Problem saved!  Add another or browse Problem List.",
             )
+            Toast(self._app, f'"{name}" saved successfully!')
             self._clear_form()
 
 
@@ -655,6 +657,7 @@ class ProblemListView(_BaseView):
         if confirm_delete(name):
             db.delete_problem(pid)
             self._refresh()
+            Toast(self._app, f'"{name}" deleted.', kind="danger")
 
 
 # ── Random Practice ───────────────────────────────────────────────────────────
