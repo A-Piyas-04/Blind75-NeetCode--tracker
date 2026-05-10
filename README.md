@@ -23,6 +23,18 @@ Built with Python · CustomTkinter · SQLite — runs fully offline, no login or
 
 ---
 
+## Demo Screenshots
+
+![Screenshot 1](Demo%20Screenshots/1.png)
+
+![Screenshot 2](Demo%20Screenshots/2.png)
+
+![Screenshot 3](Demo%20Screenshots/3.png)
+
+![Screenshot 4](Demo%20Screenshots/4.png)
+
+---
+
 ## Getting started
 
 ### 1 — Install dependencies
